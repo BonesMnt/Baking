@@ -62,49 +62,79 @@ public class NetworkUtils {
     /**
      * This method parses JSON from a web response and returns an ArrayList of Movie
      *
-     * @param moviesJsonStr JSON response from server
+     * @param jsonString JSON response from server
      * @return ArrayList of Movie with all related data
      * @throws JSONException If JSON data cannot be properly parsed
      */
-    /* TO-DO
-    public static ArrayList<String> getRecipesDataFromJson(String moviesJsonStr)
+    public static ArrayList<Recipe> getRecipesDataFromJson(String jsonString)
             throws JSONException {
 
-        ArrayList<String> recipesList = new ArrayList<>();
+        ArrayList<Recipe> recipesList = new ArrayList<>();
 
         //JSON objects
         final String OWN_NAME = "name";
         final String OWN_INGREDIENTS = "ingredients";
         final String OWN_STEPS = "steps";
         final String OWN_SERVING = "serving";
+        final String OWN_QUANTITY = "quantity";
+        final String OWN_MEASURE = "measure";
+        final String OWN_INGREDIENT = "ingredient";
+        final String OWN_SHORT_DESCRIPTION = "shortDescription";
+        final String OWN_DESCRIPTION = "description";
+        final String OWN_VIDEO_URL = "videoURL";
+        final String OWN_THUMBNAIL_URL = "thumbnailURL";
 
-        JSONObject jsonData = new JSONObject(moviesJsonStr);
-        //JSONArray recipeArray = jsonData.getJSONArray(OWN_RESULTS);
+        JSONArray recipeArray = new JSONArray(jsonString);
 
         for (int i = 0; i < recipeArray.length(); i++) {
 
-            JSONObject movieJson = recipeArray.getJSONObject(i);
+            JSONObject recipeJson = recipeArray.getJSONObject(i);
 
-            String poster = movieJson.optString(OWN_POSTER);
-            String overview = movieJson.optString(OWN_OVERVIEW);
-            String movieId = movieJson.optString(OWN_MOVIE_ID);
-            String rating = "" + movieJson.getDouble(OWN_RATING);
-            String releaseDate = movieJson.optString(OWN_RELEASE_DATE);
-            String originalTitle = movieJson.optString(OWN_ORIGINAL_TITLE);
+            String name = recipeJson.optString(OWN_NAME);
 
-            String[] releaseYear = releaseDate.split("-");
+            JSONArray ingredientsArray = recipeJson.getJSONArray(OWN_INGREDIENTS);
+            ArrayList<Ingredient> ingredientsList = new ArrayList<>();
 
+            for (int j = 0; j < ingredientsArray.length(); j++){
+                JSONObject ingredientJson = ingredientsArray.getJSONObject(j);
 
+                String quantity = "" + ingredientJson.getInt(OWN_QUANTITY);
+                String measure = ingredientJson.optString(OWN_MEASURE);
+                String ingredient = ingredientJson.optString(OWN_INGREDIENT);
 
-            Log.v(TAG, "to do");
+                Ingredient ingredientObject = new Ingredient(quantity, measure, ingredient);
+                ingredientsList.add(ingredientObject);
+            }
+
+            JSONArray stepsArray = recipeJson.getJSONArray(OWN_STEPS);
+            ArrayList<Step> stepsList = new ArrayList<>();
+
+            for (int j = 0; j < stepsArray.length(); j++){
+                JSONObject stepJson = stepsArray.getJSONObject(j);
+
+                String shortDescription = stepJson.optString(OWN_SHORT_DESCRIPTION);
+                String description = stepJson.optString(OWN_DESCRIPTION);
+                String videoUrl = stepJson.optString(OWN_VIDEO_URL);
+                String thumbnailUrl = stepJson.optString(OWN_THUMBNAIL_URL);
+
+                Step stepObject = new Step(shortDescription, description, videoUrl, thumbnailUrl);
+                stepsList.add(stepObject);
+            }
+
+            String serving = recipeJson.optString(OWN_SERVING);
+
+            Recipe recipeObject = new Recipe(name, ingredientsList, stepsList, serving);
+            Log.v(TAG, recipeObject.toString());
+            recipesList.add(recipeObject);
+
 
 
         }
 
-        return movieList;
+        return recipesList;
 
     }
-    */
+
 
     /**
      * This method checks if there is Internet Connection and return it.
