@@ -26,7 +26,6 @@ public class NetworkUtils {
 
     private static final String RECIPES_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
 
-
     /**
      * This method returns the entire result from the HTTP response.
      *
@@ -60,10 +59,10 @@ public class NetworkUtils {
     }
 
     /**
-     * This method parses JSON from a web response and returns an ArrayList of Movie
+     * This method parses JSON from a web response and returns an ArrayList of Recipes
      *
      * @param jsonString JSON response from server
-     * @return ArrayList of Movie with all related data
+     * @return ArrayList of Recipes with all related data
      * @throws JSONException If JSON data cannot be properly parsed
      */
     public static ArrayList<Recipe> getRecipesDataFromJson(String jsonString)
@@ -75,7 +74,7 @@ public class NetworkUtils {
         final String OWN_NAME = "name";
         final String OWN_INGREDIENTS = "ingredients";
         final String OWN_STEPS = "steps";
-        final String OWN_SERVING = "serving";
+        final String OWN_SERVING = "servings";
         final String OWN_QUANTITY = "quantity";
         final String OWN_MEASURE = "measure";
         final String OWN_INGREDIENT = "ingredient";

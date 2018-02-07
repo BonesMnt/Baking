@@ -1,11 +1,15 @@
 package com.mnt.bones.baking;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -15,7 +19,11 @@ import butterknife.ButterKnife;
  */
 public class MainActivityFragment extends Fragment implements AsyncTaskDelegate{
 
-    @BindView(R.id.tv_hello_world) TextView helloWorldTextview;
+    //@BindView(R.id.tv_hello_world) TextView helloWorldTextview;
+    @BindView(R.id.rv_recipes) RecyclerView mRecipesRecycler;
+
+    private RecipeAdapter mRecipeAdapter;
+    private List<Recipe> mRecipeList;
 
     public MainActivityFragment() {
     }
@@ -27,12 +35,26 @@ public class MainActivityFragment extends Fragment implements AsyncTaskDelegate{
 
         ButterKnife.bind(this, rootView);
 
-        RecipeService recipeService = new RecipeService(getContext(), this);
-        recipeService.execute();
+        mRecipeList = new ArrayList<>();
 
-        helloWorldTextview.setText("Ola mundo estou vivo");
+        RecyclerView.LayoutManager layoutManagerReview = new LinearLayoutManager(getContext());
+        mRecipesRecycler.setLayoutManager(layoutManagerReview);
+
+        mRecipeAdapter = new RecipeAdapter(getActivity(), mRecipeList);
+        mRecipesRecycler.setAdapter(mRecipeAdapter);
 
         return rootView;
+    }
+
+    private void updateList(){
+        RecipeService recipeService = new RecipeService(getContext(), this);
+        recipeService.execute();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateList();
     }
 
     @Override
@@ -42,6 +64,12 @@ public class MainActivityFragment extends Fragment implements AsyncTaskDelegate{
 
     @Override
     public void onFinish(Object output) {
+        if (output != null){
+            ArrayList<Recipe> downloadedList = (ArrayList) output;
 
+            mRecipeList.clear();
+            mRecipeList.addAll(downloadedList);
+            mRecipeAdapter.notifyDataSetChanged();
+        }
     }
 }
